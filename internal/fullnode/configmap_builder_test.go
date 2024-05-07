@@ -369,10 +369,14 @@ func TestBuildConfigMaps(t *testing.T) {
 			overrides.Spec.ChainSpec.App.TomlOverrides = ptr(`
 	minimum-gas-prices = "0.1override"
 	new-base = "new base value"
-	
+
 	[api]
 	enable = false
 	new-field = "test"
+
+	[json-rpc]
+	enable = true
+	address = "0.0.0.0:8545"
 	`)
 			cms, err := BuildConfigMaps(overrides, nil)
 			require.NoError(t, err)

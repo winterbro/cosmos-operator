@@ -167,31 +167,31 @@ func TestBuildServices(t *testing.T) {
 	t.Run("rpc service", func(t *testing.T) {
 		crd := defaultCRD()
 		crd.Spec.Replicas = 1
-		crd.Name = "terra"
+		crd.Name = "evmos"
 		crd.Namespace = "test"
 		crd.Spec.ChainSpec.Network = "testnet"
-		crd.Spec.PodTemplate.Image = "terra:v6.0.0"
+		crd.Spec.PodTemplate.Image = "evmos:v17.0.1"
 		svcs := BuildServices(&crd)
 
 		require.Equal(t, 2, len(svcs)) // Includes single p2p service.
 
 		rpc := svcs[1].Object()
-		require.Equal(t, "terra-rpc", rpc.Name)
+		require.Equal(t, "evmos-rpc", rpc.Name)
 		require.Equal(t, "test", rpc.Namespace)
 		require.Equal(t, corev1.ServiceTypeClusterIP, rpc.Spec.Type)
-		require.Equal(t, map[string]string{"app.kubernetes.io/name": "terra"}, rpc.Spec.Selector)
+		require.Equal(t, map[string]string{"app.kubernetes.io/name": "evmos"}, rpc.Spec.Selector)
 
 		wantLabels := map[string]string{
 			"app.kubernetes.io/created-by": "cosmos-operator",
-			"app.kubernetes.io/name":       "terra",
+			"app.kubernetes.io/name":       "evmos",
 			"app.kubernetes.io/component":  "rpc",
-			"app.kubernetes.io/version":    "v6.0.0",
+			"app.kubernetes.io/version":    "v17.0.1",
 			"cosmos.strange.love/network":  "testnet",
 			"cosmos.strange.love/type":     "FullNode",
 		}
 		require.Equal(t, wantLabels, rpc.Labels)
 
-		require.Equal(t, 5, len(rpc.Spec.Ports))
+		require.Equal(t, 6, len(rpc.Spec.Ports))
 		// All ports minus prometheus and p2p.
 		want := []corev1.ServicePort{
 			{
@@ -223,6 +223,12 @@ func TestBuildServices(t *testing.T) {
 				Protocol:   corev1.ProtocolTCP,
 				Port:       9091,
 				TargetPort: intstr.FromString("grpc-web"),
+			},
+			{
+				Name:       "json-rpc",
+				Protocol:   corev1.ProtocolTCP,
+				Port:       8545,
+				TargetPort: intstr.FromString("json-rpc"),
 			},
 		}
 

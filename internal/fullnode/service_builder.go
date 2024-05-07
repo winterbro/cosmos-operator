@@ -115,6 +115,12 @@ func rpcService(crd *cosmosv1.CosmosFullNode) *corev1.Service {
 			Port:       grpcWebPort,
 			TargetPort: intstr.FromString("grpc-web"),
 		},
+		{
+			Name:       "json-rpc",
+			Protocol:   corev1.ProtocolTCP,
+			Port:       jsonRpcPort,
+			TargetPort: intstr.FromString("json-rpc"),
+		},
 	}
 
 	svc.Spec.Selector = map[string]string{kube.NameLabel: appName(crd)}

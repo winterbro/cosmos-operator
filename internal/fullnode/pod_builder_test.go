@@ -108,7 +108,7 @@ func TestPodBuilder(t *testing.T) {
 		require.NoError(t, err)
 		ports := pod.Spec.Containers[0].Ports
 
-		require.Equal(t, 7, len(ports))
+		require.Equal(t, 8, len(ports))
 
 		for i, tt := range []struct {
 			Name string
@@ -121,6 +121,7 @@ func TestPodBuilder(t *testing.T) {
 			{"p2p", 26656},
 			{"rpc", 26657},
 			{"grpc-web", 9091},
+			{"json-rpc", 8545},
 		} {
 			port := ports[i]
 			require.Equal(t, tt.Name, port.Name, tt)
@@ -138,7 +139,7 @@ func TestPodBuilder(t *testing.T) {
 		require.NoError(t, err)
 		ports := pod.Spec.Containers[0].Ports
 
-		require.Equal(t, 8, len(ports))
+		require.Equal(t, 9, len(ports))
 
 		got, _ := lo.Last(ports)
 

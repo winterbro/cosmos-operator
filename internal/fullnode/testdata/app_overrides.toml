@@ -16,3 +16,7 @@ address = "0.0.0.0:9090"
 enable = true
 address = "0.0.0.0:9091"
 enable-unsafe-cors = false
+
+[json-rpc]
+enable = true
+address = "0.0.0.0:8545"
